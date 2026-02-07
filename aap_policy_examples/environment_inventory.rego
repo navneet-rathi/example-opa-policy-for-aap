@@ -1,4 +1,6 @@
-package inventory.naming
+package aap_policy_examples
+
+import rego.v1
 
 default allow = false
 
