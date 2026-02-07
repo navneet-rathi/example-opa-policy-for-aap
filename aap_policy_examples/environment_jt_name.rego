@@ -9,11 +9,7 @@ allowed_environments := {
   "dev",
   "qa",
   "uat",
-  "prod",
-  "DEV",
-  "QA",
-  "UAT",
-  "PROD"
+  "prod"
 }
 
 # Extract job template name
