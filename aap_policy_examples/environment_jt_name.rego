@@ -16,19 +16,26 @@ allowed_environments := {
 job_name := lower(input.job_template.name)
 
 ################################
-# Allow rule
+# Helper rule: valid job template name
 ################################
-allow if {
+valid_job_template_name if {
   some env
   env := allowed_environments[_]
   startswith(job_name, sprintf("%s-", [env]))
 }
 
 ################################
+# Allow rule
+################################
+allow if {
+  valid_job_template_name
+}
+
+################################
 # Deny rule
 ################################
 deny[msg] if {
-  not allow
+  not valid_job_template_name
   msg := sprintf(
     "Job template name '%s' must start with an environment name (%v). Example: prod-my-job",
     [input.job_template.name, allowed_environments]
