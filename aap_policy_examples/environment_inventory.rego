@@ -19,8 +19,7 @@ inventory_name := lower(input.inventory.name)
 # Helper rule: valid inventory name
 ################################
 valid_inventory_name if {
-  some env
-  env := allowed_environments[_]
+  some env in allowed_environments
   startswith(inventory_name, sprintf("%s-", [env]))
 }
 
