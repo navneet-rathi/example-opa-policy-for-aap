@@ -25,16 +25,16 @@ ist_hour := (ist_seconds / 3600) % 24
 ################################
 
 # Rule: execution allowed only for non-superuser
-non_superuser {
+non_superuser if {
   input.user.is_superuser == false
 }
 
 # Rule: execution allowed only between 12:00 IST and 06:00 IST
-allowed_time {
+allowed_time if {
   ist_hour >= 12
 }
 
-allowed_time {
+allowed_time if {
   ist_hour < 6
 }
 
@@ -42,7 +42,7 @@ allowed_time {
 # Final allow rule
 ################################
 
-allow {
+allow if {
   non_superuser
   allowed_time
 }
@@ -51,12 +51,12 @@ allow {
 # Deny messages
 ################################
 
-deny[msg] {
+deny[msg] if {
   input.user.is_superuser == true
   msg := "Project execution is not allowed for superusers."
 }
 
-deny[msg] {
+deny[msg] if {
   not allowed_time
   msg := sprintf(
     "Project execution is allowed only between 12:00 IST and 06:00 IST. Current IST hour: %d",
