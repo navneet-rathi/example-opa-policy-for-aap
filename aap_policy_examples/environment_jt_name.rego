@@ -2,8 +2,6 @@ package aap_policy_examples
 
 import rego.v1
 
-default allow = false
-
 # List of allowed environment prefixes
 allowed_environments := {
   "dev",
@@ -24,14 +22,7 @@ valid_job_template_name if {
 }
 
 ################################
-# Allow rule
-################################
-allow if {
-  valid_job_template_name
-}
-
-################################
-# Deny rule
+# Deny rule only
 ################################
 deny[msg] if {
   not valid_job_template_name
