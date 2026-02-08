@@ -19,8 +19,7 @@ job_name := lower(input.job_template.name)
 # Helper rule: valid job template name
 ################################
 valid_job_template_name if {
-  some env
-  env := allowed_environments[_]
+  some env in allowed_environments
   startswith(job_name, sprintf("%s-", [env]))
 }
 
