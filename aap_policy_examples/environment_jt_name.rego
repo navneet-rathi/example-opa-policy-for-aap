@@ -2,32 +2,49 @@ package aap_policy_examples
 
 import rego.v1
 
-# List of allowed environment prefixes
+################################
+# Default response
+################################
+default jt_naming_validation := {
+    "allowed": true,
+    "violations": [],
+}
+
+################################
+# Allowed environment prefixes
+################################
 allowed_environments := {
-  "dev",
-  "qa",
-  "uat",
-  "prod"
-}
-
-# Extract job template name
-job_name := lower(input.job_template.name)
-
-################################
-# Helper rule: valid job template name
-################################
-valid_job_template_name if {
-  some env in allowed_environments
-  startswith(job_name, sprintf("%s-", [env]))
+    "dev",
+    "qa",
+    "uat",
+    "prod",
 }
 
 ################################
-# Deny rule only
+# Validation rule
 ################################
-deny[msg] if {
-  not valid_job_template_name
-  msg := sprintf(
-    "Job template name '%s' must start with an environment name (%v). Example: prod-my-job",
-    [input.job_template.name, allowed_environments]
-  )
+jt_naming_validation := result if {
+    # Extract job template name
+    jt_name := lower(object.get(input, ["job_template", "name"], ""))
+
+    # Job template does NOT start with any allowed environment
+    not valid_environment_prefix(jt_name)
+
+    result := {
+        "allowed": false,
+        "violations": [
+            sprintf(
+                "Job template name '%s' must start with an environment prefix (%v). Example: prod-my-job",
+                [jt_name, allowed_environments]
+            )
+        ],
+    }
+}
+
+################################
+# Helper rule
+################################
+valid_environment_prefix(jt_name) if {
+    some env in allowed_environments
+    startswith(jt_name, sprintf("%s-", [env]))
 }
