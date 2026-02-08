@@ -15,15 +15,19 @@ allowed_environments := {
 # Extract job template name
 job_name := lower(input.job_template.name)
 
-# Allow if job template name starts with a valid environment prefix
-allow {
+################################
+# Allow rule
+################################
+allow if {
   some env
   env := allowed_environments[_]
   startswith(job_name, sprintf("%s-", [env]))
 }
 
-# Deny message if policy fails
-deny[msg] {
+################################
+# Deny rule
+################################
+deny[msg] if {
   not allow
   msg := sprintf(
     "Job template name '%s' must start with an environment name (%v). Example: prod-my-job",
