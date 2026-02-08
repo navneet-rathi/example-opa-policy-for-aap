@@ -15,15 +15,19 @@ allowed_environments := {
 # Normalize inventory name to lowercase
 inventory_name := lower(input.inventory.name)
 
-# Allow inventory if name starts with a valid environment prefix
-allow {
+################################
+# Allow rule
+################################
+allow if {
   some env
   env := allowed_environments[_]
   startswith(inventory_name, sprintf("%s-", [env]))
 }
 
-# Deny message if naming convention is violated
-deny[msg] {
+################################
+# Deny rule
+################################
+deny[msg] if {
   not allow
   msg := sprintf(
     "Inventory name '%s' must start with an environment name (%v). Example: prod-linux-servers",
