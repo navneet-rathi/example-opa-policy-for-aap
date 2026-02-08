@@ -2,8 +2,6 @@ package aap_policy_examples
 
 import rego.v1
 
-default allow = false
-
 # Allowed environment prefixes
 allowed_environments := {
   "dev",
@@ -12,11 +10,10 @@ allowed_environments := {
   "prod"
 }
 
-# Normalize inventory name to lowercase
 inventory_name := lower(input.inventory.name)
 
 ################################
-# Helper rule: valid inventory name
+# Helper rule
 ################################
 valid_inventory_name if {
   some env in allowed_environments
@@ -24,14 +21,7 @@ valid_inventory_name if {
 }
 
 ################################
-# Allow rule
-################################
-allow if {
-  valid_inventory_name
-}
-
-################################
-# Deny rule
+# Deny rule only
 ################################
 deny[msg] if {
   not valid_inventory_name
