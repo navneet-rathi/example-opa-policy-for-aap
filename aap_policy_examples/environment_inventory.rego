@@ -16,19 +16,26 @@ allowed_environments := {
 inventory_name := lower(input.inventory.name)
 
 ################################
-# Allow rule
+# Helper rule: valid inventory name
 ################################
-allow if {
+valid_inventory_name if {
   some env
   env := allowed_environments[_]
   startswith(inventory_name, sprintf("%s-", [env]))
 }
 
 ################################
+# Allow rule
+################################
+allow if {
+  valid_inventory_name
+}
+
+################################
 # Deny rule
 ################################
 deny[msg] if {
-  not allow
+  not valid_inventory_name
   msg := sprintf(
     "Inventory name '%s' must start with an environment name (%v). Example: prod-linux-servers",
     [input.inventory.name, allowed_environments]
