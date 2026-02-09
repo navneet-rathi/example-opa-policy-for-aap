@@ -5,7 +5,7 @@ import rego.v1
 ################################
 # Default response
 ################################
-default jt_naming_validation := {
+default jobt_naming_validation := {
     "allowed": true,
     "violations": [],
 }
@@ -23,7 +23,7 @@ allowed_environments := {
 ################################
 # Validation rule
 ################################
-jt_naming_validation := result if {
+jobt_naming_validation := result if {
     # Extract job template name
     jt_name := lower(object.get(input, ["job_template", "name"], ""))
 
